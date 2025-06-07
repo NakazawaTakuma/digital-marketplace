@@ -1,7 +1,3 @@
-以下は、GitHub リポジトリ [NakazawaTakuma/digital-marketplace](https://github.com/NakazawaTakuma/digital-marketplace) 用の README のテンプレートです。
-
----
-
 # Digital Marketplace
 
 **Digital Marketplace** は、デジタル製品のためのフルスタック E コマースプラットフォームです。
@@ -52,9 +48,3 @@
 ## 📄 ライセンス
 
 このプロジェクトは [MIT ライセンス](LICENSE) の下で公開されています。
-
----
-
-この README は、プロジェクトの概要、主な機能、セットアップ方法、プロジェクト構成、ライセンス情報を含んでいます。プロジェクトの詳細や特定の機能についてさらに説明が必要な場合は、お知らせください。
-
-[1]: https://github.com/joschan21/digitalhippo?utm_source=chatgpt.com "joschan21/digitalhippo: A Modern Fullstack E-Commerce ... - GitHub"
