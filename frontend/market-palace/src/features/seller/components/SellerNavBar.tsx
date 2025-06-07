@@ -1,5 +1,8 @@
 import React from "react";
-import { TabNav, TabItem } from "../../../components/TabNav";
+import {
+  TabNav,
+  TabItem,
+} from "../../../components/common/atoms/TabNav/TabNav";
 
 // type SellerTabKey = "home" | "store" | "collection" | "market";
 type SellerTabKey = "home" | "store";
@@ -30,3 +33,4 @@ const SellerNavBar: React.FC<SellerNavBarProps> = ({
 };
 
 export default SellerNavBar;
+export type { SellerTabKey };

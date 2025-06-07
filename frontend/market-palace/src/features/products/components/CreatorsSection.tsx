@@ -2,7 +2,7 @@ import React from "react";
 import Icon800x800 from "@root/tests/assets/Icon800x800.png";
 import { Icon } from "@/utils/Icon";
 import styles from "./CreatorsSection.module.css";
-import Modal from "../../../components/Modal";
+import Modal from "../../../components/common/organisms/Modal/Modal";
 
 interface Creator {
   id: number;

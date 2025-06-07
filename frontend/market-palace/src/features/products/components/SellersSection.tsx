@@ -1,7 +1,7 @@
 import React from "react";
 import { Icon } from "@/utils/Icon";
 import styles from "./SellersSection.module.css";
-import Modal from "../../../components/Modal";
+import Modal from "../../../components/common/organisms/Modal/Modal";
 
 interface Seller {
   id: number;

@@ -1,13 +1,10 @@
 // src/features/seller/components/CollectionListSection.tsx
 import React from "react";
 import styles from "./CollectionList.module.css";
-import { useNavigate } from "react-router-dom";
-import Icon800x800 from "@root/tests/assets/Icon800x800.png";
 import Icon800x1200 from "@root/tests/assets/Icon800x1200.png";
-import PC3840x2400 from "@root/tests/assets/pc3840x2400.jpeg";
 import CollectionCard, {
   Collection,
-} from "../../../components/common/CollectionCard";
+} from "../../../components/cards/molecules/CollectionCard/CollectionCard";
 
 // サンプルコレクションデータ
 const collections: Collection[] = [

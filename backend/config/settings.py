@@ -16,6 +16,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -26,12 +28,12 @@ SECRET_KEY = "django-insecure-cjl@5h+duf7)!-guf5_k6l0je@!d(8y5$qgk5=on53!n@dh&z*
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+print(">>> DEBUG =", DEBUG)
 
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',                   # ← 追加
+    'corsheaders',       
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -40,6 +42,14 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'rest_framework',  # Django REST Framework
     'marketplace',     # 作成したアプリケーション
+
+    'marketplace.users', 
+    'marketplace.orders',
+    'marketplace.products',  # ← ここが必須
+    'marketplace.core',
+    'marketplace.cart',
+
+    'django_crontab',
 
 ]
 
@@ -59,7 +69,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR/'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -94,6 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        'OPTIONS': {'min_length': 8},
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
@@ -119,7 +130,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -145,11 +159,49 @@ INSTALLED_APPS += [
     'rest_framework_simplejwt.token_blacklist',  # リフレッシュのブラックリスト管理を有効にする場合
 ]
 
+
+
+
 REST_FRAMEWORK = {
+    # ── 認証方式はそのまま Simple JWT ──
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+
+    # ── デフォルトのパーミッションクラスを設定 ──
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+
+    # ── レンダラー設定を DEBUG に応じて切り替え ──
+    'DEFAULT_RENDERER_CLASSES': (
+        # レスポンスは JSON で返す
+        'rest_framework.renderers.JSONRenderer',
+
+        # 開発時のみブラウザブル UI を追加
+        *(
+            (
+                'rest_framework.renderers.BrowsableAPIRenderer',
+            )
+            if DEBUG else ()
+        ),
+    ),
+
+    # リクエストは JSON のみ受け付ける（必要に応じて）
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FormParser',
+    ),
+
+    # エラーレスポンスを常にJSONで返す
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+    'NON_FIELD_ERRORS_KEY': 'non_field_errors',
 }
+
+
+
+
 
 from datetime import timedelta
 
@@ -164,6 +216,59 @@ SIMPLE_JWT = {
 # -----------------------------------
 
 
+AUTHENTICATION_BACKENDS = [
+    # まずカスタムバックエンドを先頭に
+    'marketplace.users.backends.EmailOrUsernameModelBackend',
+    # フォールバックで標準の ModelBackend
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+
+# メール設定
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Gmailの場合
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tzero30208g@gmail.com'  # 実際のメールアドレス
+EMAIL_HOST_PASSWORD = 'twfr wlfz lhlz kkhu'  # Gmailのアプリパスワード
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# URL
+FRONTEND_URL = 'http://localhost:5173'  # 開発環境の場合
+SITE_DOMAIN = 'http://127.0.0.1:8001'
+
+
+AUTH_USER_MODEL = 'users.User'
+
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24  # 86400 秒 = 24 時間
+
+
+# ── django-crontab 用の設定 ──
+CRONJOBS = [
+    # 例：毎日午前2時に cleanup_pending_users を実行
+    # ('0 2 * * *', 'django.core.management.call_command', ['cleanup_pending_users']),
+    #
+    # 例：6時間おきに実行したい場合（0 */6 * * *）
+    ('0 */6 * * *', 'django.core.management.call_command', ['cleanup_pending_users']),
+]
+
+# 注意：
+# - 第1引数の '0 */6 * * *' は「0分・6時間おき」のcron書式です（UTC or サーバーのローカルタイムに従います）。
+# - 書式は「分 時 日 月 曜日」の順。たとえば、毎日深夜3時 → '0 3 * * *'。
+# - その他のcron書式についてはお使いのサーバー環境に合わせて調整してください。
+
+
+
+# 画像アップロード用
+INSTALLED_APPS += [
+    'django_cleanup.apps.CleanupConfig',  # 古いファイル削除用（optional）
+]
+
+# ─── メディアファイル用設定 ───────────────────────────────────────────
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+# ─────────────────────────────────────────────────────────────────────
 
 
 

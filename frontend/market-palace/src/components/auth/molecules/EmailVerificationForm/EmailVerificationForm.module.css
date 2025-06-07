@@ -1,0 +1,60 @@
+/* src/components/auth/molecules/EmailVerificationForm/EmailVerificationForm.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+}
+
+.text {
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.error {
+  color: #dc3545;
+  margin-bottom: 12px;
+}
+
+.success {
+  color: #28a745;
+  margin-bottom: 12px;
+}
+
+.loading {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.loginButton {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}

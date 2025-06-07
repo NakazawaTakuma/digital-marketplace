@@ -1,5 +1,8 @@
 import React from "react";
-import { TabNav, TabItem } from "../../../components/TabNav";
+import {
+  TabNav,
+  TabItem,
+} from "../../../components/common/atoms/TabNav/TabNav";
 
 export type NotificationTabKey =
   | "all"
